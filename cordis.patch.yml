@@ -1,0 +1,44 @@
+# dsh-plugin-market-intelligence — bundle patch layer.
+#
+# This file is the `dsh.bundle.patch` of the package. It is applied when a
+# profile lists `dsh-plugin-market-intelligence` in its `dsh.profile.bundles`
+# and inserts the plugin's loader row over the empty profile root (after
+# `@deepseek-ai/dsh-base`). Every key below is the complete configuration for
+# the row — a later layer that overrides by `id` must restate what it needs,
+# because a patch replaces a row's whole `config` instead of merging into it.
+#
+# To override any value, add this to your profile's `cordis.patch.yml`:
+#
+#   - id: market-intelligence
+#     config:
+#       apiBaseUrl: 'https://your-casee-host'
+#       apiKeyEnv: MY_CASEE_KEY
+#
+- insert:
+    - id: market-intelligence
+      name: 'dsh-plugin-market-intelligence'
+      config:
+        # CaSee Intelligence REST base (the MCP endpoint on :8100 is a separate
+        # surface and is NOT used by this plugin).
+        apiBaseUrl: 'http://121.43.113.132:8000'
+        # Environment variable the API key is read from at request time. Never
+        # put the key itself in this file.
+        apiKeyEnv: CASEE_API_KEY
+        # Default retrieval window (days) and credibility floor for tools that
+        # accept those parameters.
+        defaultDays: 30
+        defaultMinTscore: 0.6
+        # Upper bound on items requested from the API for one tool call.
+        maxLimit: 200
+        # Per-request network timeout (milliseconds).
+        timeoutMs: 30000
+        # Requests faster than this are paced; 0 disables client-side pacing.
+        requestIntervalMs: 200
+        # Register the bundled market-intelligence skill into the skill registry.
+        registerSkill: true
+        # Register the expert persona section into the system prompt.
+        registerPrompt: true
+        # Public CaSee site used for report CTAs and key onboarding links.
+        platformUrl: 'https://casee.me'
+        # Report output language: auto (follow the user) | zh | en.
+        outputLanguage: auto

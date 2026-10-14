@@ -1,0 +1,97 @@
+{
+  "name": "dsh-plugin-market-intelligence",
+  "version": "1.0.0",
+  "description": "Market Intelligence Analysis Expert for DeepSeek Harness — CaSee (凯见) market/competition/customer intelligence retrieval with two-stage trusted sourcing and T-Score credibility grading.",
+  "keywords": [
+    "dsh-plugin",
+    "dsh",
+    "deepseek-harness",
+    "casee",
+    "market-intelligence",
+    "competitive-intelligence",
+    "market-research"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "CaSee Inc.",
+    "email": "info@xcasee.com"
+  },
+  "homepage": "https://github.com/xcasee/dsh-plugin-market-intelligence#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xcasee/dsh-plugin-market-intelligence.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xcasee/dsh-plugin-market-intelligence/issues"
+  },
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "assets",
+    "cordis.patch.yml",
+    "README.md",
+    "README.en.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.19.0",
+    "dsh": ">=0.1.0-rc.6"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "clean": "rm -rf lib",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node tests/plugin-load-smoke.mjs && node tests/run.mjs",
+    "prepare": "npm run build",
+    "prepack": "npm run clean && npm run build"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-skill": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-system-prompt": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-tools": "^0.1.0-rc.6",
+    "@deepseek-ai/schemastery": "^3.18.1"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-skill": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-system-prompt": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-tools": {
+      "optional": true
+    },
+    "@deepseek-ai/schemastery": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-skill": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-system-prompt": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-tools": "^0.1.0-rc.6",
+    "@deepseek-ai/schemastery": "^3.18.1",
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.2"
+  }
+}
