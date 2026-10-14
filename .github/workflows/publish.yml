@@ -24,8 +24,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: corepack enable
-      - run: pnpm install --frozen-lockfile
+      # This package is built and tested with npm; the committed lockfile is
+      # package-lock.json, so CI uses `npm ci` (a pnpm --frozen-lockfile install
+      # would fail for lack of pnpm-lock.yaml).
+      - run: npm ci --no-audit --no-fund
       - name: Verify tag matches package.json version
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
@@ -35,8 +37,9 @@ jobs:
             echo "::error::tag $TAG does not match package.json version $PKG"
             exit 1
           fi
-      - run: pnpm run build
-      - run: pnpm pack
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm pack
       - uses: actions/upload-artifact@v4
         with:
           name: tarball
@@ -60,10 +63,16 @@ jobs:
         with:
           name: tarball
           path: dist
-      # The leading ./ matters: npm 11 otherwise reads dist/*.tgz as a GitHub shorthand.
-      - run: npm publish ./dist/*.tgz --provenance --access public
+      - name: Publish to npm when NPM_TOKEN is configured
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "::warning::NPM_TOKEN is not configured for this repository; skipping npm publish. Add it under Settings -> Secrets and variables -> Actions, then re-run this workflow."
+            exit 0
+          fi
+          # The leading ./ matters: npm 11 otherwise reads dist/*.tgz as a GitHub shorthand.
+          npm publish ./dist/*.tgz --provenance --access public
 
   release:
     name: GitHub release
